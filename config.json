@@ -61,7 +61,7 @@
         "id": "comercio",
         "label": "Nombre del comercio",
         "type": "text",
-        "required": false,
+        "required": true,
         "errMsg": "Campo requerido",
         "half": true,
         "options": ""
@@ -79,7 +79,7 @@
         "id": "ubicacion",
         "label": "Localidad o barrio",
         "type": "text",
-        "required": false,
+        "required": true,
         "errMsg": "Campo requerido",
         "half": true,
         "options": ""
@@ -97,7 +97,7 @@
         "id": "estado",
         "label": "Estado del comercio",
         "type": "select",
-        "required": false,
+        "required": true,
         "errMsg": "Campo requerido",
         "half": true,
         "options": "Por abrir|Ya funcionando|Con intimación o clausura"
@@ -106,7 +106,7 @@
         "id": "personal",
         "label": "Cantidad de empleados",
         "type": "number",
-        "required": false,
+        "required": true,
         "errMsg": "Campo requerido",
         "half": true,
         "options": ""
@@ -115,7 +115,7 @@
         "id": "mensaje",
         "label": "Contame tu situación",
         "type": "textarea",
-        "required": false,
+        "required": true,
         "errMsg": "Campo requerido",
         "half": false,
         "options": ""
@@ -124,7 +124,7 @@
         "id": "como_encontraste",
         "label": "¿Cómo me encontraste?",
         "type": "select",
-        "required": false,
+        "required": true,
         "errMsg": "Campo requerido",
         "half": true,
         "options": "Instagram|Recomendación|Google|Otro"
