@@ -1,7 +1,11 @@
 // ============================================================
-//  ALLFIT – CRM Google Sheets
-//  Pegá TODO este código en Google Apps Script (script.google.com)
-//  y deployalo como Web App (ver instrucciones abajo)
+//  BROMATEC – CRM en Google Sheets
+//  Recibe los datos del formulario del sitio y los guarda como
+//  una fila nueva en tu planilla. Columnas dinámicas: se adaptan
+//  solos a los campos del formulario (no hay que tocar nada acá).
+//
+//  >>> Pegá TODO este código en Google Apps Script y deployalo
+//      como Aplicación web. Instrucciones al final del archivo. <<<
 // ============================================================
 
 const SHEET_NAME = 'Leads';
@@ -20,14 +24,12 @@ function doPost(e) {
     // ── Obtener / crear cabeceras ──
     var headers;
     if (sheet.getLastRow() === 0) {
-      // Primera fila: armar cabeceras con columnas fijas + campos del form
       var dynamicKeys = Object.keys(data).filter(function(k){ return k !== '_fecha'; });
       headers = FIXED.concat(dynamicKeys);
       sheet.appendRow(headers);
 
-      // Estilo cabecera
       var headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setBackground('#1756b8');
+      headerRange.setBackground('#0C3B26');   // verde BROMATEC
       headerRange.setFontColor('#ffffff');
       headerRange.setFontWeight('bold');
       headerRange.setHorizontalAlignment('center');
@@ -39,21 +41,21 @@ function doPost(e) {
       headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     }
 
-    // ── Agregar columnas nuevas si el form tiene campos extras ──
+    // ── Agregar columnas nuevas si el form trae campos extra ──
     Object.keys(data).forEach(function(key){
       if (key === '_fecha') return;
       if (headers.indexOf(key) === -1) {
         headers.push(key);
         var newColRange = sheet.getRange(1, headers.length);
         newColRange.setValue(key);
-        newColRange.setBackground('#1756b8');
+        newColRange.setBackground('#0C3B26');
         newColRange.setFontColor('#ffffff');
         newColRange.setFontWeight('bold');
       }
     });
 
     // ── Armar fila ──
-    var fecha  = data['_fecha'] ? new Date(data['_fecha']) : new Date();
+    var fecha = data['_fecha'] ? new Date(data['_fecha']) : new Date();
     var row = headers.map(function(h){
       if (h === 'Fecha')  return fecha;
       if (h === 'Estado') return 'Nuevo';
@@ -63,26 +65,28 @@ function doPost(e) {
     sheet.appendRow(row);
     var lastRow = sheet.getLastRow();
 
-    // ── Dropdown de Estado ──
+    // ── Desplegable de Estado (para hacer seguimiento) ──
     var estadoCol = headers.indexOf('Estado') + 1;
     if (estadoCol > 0) {
       var rule = SpreadsheetApp.newDataValidation()
-        .requireValueInList(['Nuevo', 'Contactado', 'En proceso', 'Cerrado', 'Sin cerrar'], true)
+        .requireValueInList(['Nuevo', 'Contactado', 'Visita agendada', 'Presupuesto enviado', 'Cliente', 'Descartado'], true)
         .build();
       sheet.getRange(lastRow, estadoCol).setDataValidation(rule);
-      // Color de celda según estado inicial
       sheet.getRange(lastRow, estadoCol).setBackground('#FEF3C7').setFontColor('#92400E');
     }
 
-    // ── Zebra striping de la fila nueva ──
-    var rowBg = (lastRow % 2 === 0) ? '#F8FAFC' : '#FFFFFF';
+    // ── Filas alternadas (zebra) ──
+    var rowBg = (lastRow % 2 === 0) ? '#F4F6F5' : '#FFFFFF';
     sheet.getRange(lastRow, 1, 1, headers.length).setBackground(rowBg);
+
+    // (Opcional) avisarte por mail de cada lead nuevo: descomentá y poné tu correo
+    // MailApp.sendEmail('tucorreo@ejemplo.com', 'Nuevo lead BROMATEC', JSON.stringify(data, null, 2));
 
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true }))
       .setMimeType(ContentService.MimeType.JSON);
 
-  } catch(err) {
+  } catch (err) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: err.message }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -90,19 +94,26 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput('ALLFIT Leads API – OK');
+  return ContentService.createTextOutput('BROMATEC CRM – OK');
 }
 
 // ============================================================
-//  INSTRUCCIONES DE DEPLOY
-//  1. Ir a https://script.google.com → "Nuevo proyecto"
-//  2. Borrar el código que hay y pegar TODO este archivo
-//  3. Guardar (Ctrl+S) → ponerle nombre "ALLFIT CRM"
-//  4. Clic en "Implementar" → "Nueva implementación"
-//  5. Tipo: "Aplicación web"
-//     - Ejecutar como: YO (tu cuenta Google)
-//     - Quién tiene acceso: Cualquier persona (anónimo)
-//  6. Clic en "Implementar" → copiar la URL que aparece
-//  7. Pegar esa URL en formulario.html donde dice SHEETS_URL = ''
-//  8. Guardar y commitear
+//  CÓMO PONERLO EN MARCHA (una sola vez)
+//
+//  1. Creá una planilla nueva en Google Sheets (sheets.new).
+//  2. En esa planilla: menú  Extensiones → Apps Script.
+//  3. Borrá lo que haya y pegá TODO este archivo. Guardá (Ctrl+S).
+//  4. Arriba a la derecha: "Implementar" → "Nueva implementación".
+//     - Engranaje ⚙ → tipo "Aplicación web".
+//     - Ejecutar como:  Yo (tu cuenta).
+//     - Quién tiene acceso:  Cualquier persona.
+//     - "Implementar".  (La primera vez te pide autorizar: aceptá.)
+//  5. Copiá la "URL de la aplicación web" (termina en /exec).
+//  6. Pegá esa URL en el sitio:
+//        Panel (triple clic esquina inf. izq. → contraseña)
+//        → Formulario → campo "Google Sheets (CRM)" → Guardar.
+//     (Y publicá con el token para que quede en todos los dispositivos.)
+//
+//  Listo: cada persona que complete el formulario aparece como una
+//  fila nueva en la planilla, con Fecha y un Estado editable.
 // ============================================================

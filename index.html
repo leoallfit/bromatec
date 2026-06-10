@@ -587,8 +587,12 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
        <button id="add-form-field" class="adm-add-btn">＋ Agregar pregunta</button>
       </div>
       <div class="adm-card">
-       <div class="adm-card-ttl">Integración Formspree</div>
-       <div class="adm-f"><label>ID del formulario Formspree</label><input id="f-formspree" placeholder="xkgwlrpz"/><span class="adm-hint">Creá cuenta gratis en formspree.io → Create Form → copiá el ID. Los datos llegarán a tu email.</span></div>
+       <div class="adm-card-ttl">CRM · Google Sheets</div>
+       <div class="adm-f"><label>URL de Google Sheets (Apps Script /exec)</label><input id="f-sheets" placeholder="https://script.google.com/macros/s/..../exec"/><span class="adm-hint">Cada persona que complete el formulario aparece como una fila nueva en tu planilla. Seguí los pasos del archivo <code style="background:#F1F5F9;padding:1px 5px;border-radius:3px">apps-script-crm.gs</code> y pegá acá la URL que termina en <code style="background:#F1F5F9;padding:1px 5px;border-radius:3px">/exec</code>.</span></div>
+      </div>
+      <div class="adm-card">
+       <div class="adm-card-ttl">Integración Formspree (opcional)</div>
+       <div class="adm-f"><label>ID del formulario Formspree</label><input id="f-formspree" placeholder="xkgwlrpz"/><span class="adm-hint">Alternativa o complemento al Sheets: creá cuenta gratis en formspree.io → Create Form → copiá el ID. Los datos llegarán a tu email.</span></div>
       </div>
      </div>
 
@@ -822,7 +826,7 @@ const DEFAULT = {
   cta:{ title:'¿Necesitás regularizar tu comercio de alimentos?', sub:'Coordinemos una visita a tu establecimiento en Córdoba. La primera consulta no tiene costo ni compromiso.', btn:'SOLICITAR UNA CONSULTA' },
   social:{ ig:'', yt:'', li:'', wa:'', email:'tucorreo@ejemplo.com' },
   footer:{ tagline:'Dirección técnica bromatológica, habilitaciones y capacitación para comercios de alimentos en Córdoba.', copy:'© 2026 BROMATEC. Todos los derechos reservados.' },
-  form:{ label:'Contacto', title:'Contame sobre tu establecimiento', sub:'Completá el formulario y dentro de las 24 hs me comunico con vos para coordinar una visita.', btn:'SOLICITAR UNA CONSULTA', okTitle:'Consulta recibida', okMsg:'Recibí tus datos y dentro de las 24 hs me comunico con vos para coordinar la visita a tu establecimiento. Gracias por tu interés.', formspree:'',
+  form:{ label:'Contacto', title:'Contame sobre tu establecimiento', sub:'Completá el formulario y dentro de las 24 hs me comunico con vos para coordinar una visita.', btn:'SOLICITAR UNA CONSULTA', okTitle:'Consulta recibida', okMsg:'Recibí tus datos y dentro de las 24 hs me comunico con vos para coordinar la visita a tu establecimiento. Gracias por tu interés.', formspree:'', sheetsUrl:'',
     fields:[
       {id:'nombre',          label:'Nombre y apellido',          type:'text',    required:true,  errMsg:'Ingresá tu nombre',          half:true},
       {id:'email',           label:'Email',                      type:'email',   required:true,  errMsg:'Email inválido',             half:true},
@@ -1370,6 +1374,7 @@ function populateAdmin(){
   document.getElementById('f-ok-title').value=c.form.okTitle||'';
   document.getElementById('f-ok-msg').value=c.form.okMsg||'';
   document.getElementById('f-formspree').value=c.form.formspree||'';
+  document.getElementById('f-sheets').value=c.form.sheetsUrl||'';
   renderAdmFields(c.form.fields||[]);
   // sync
   document.getElementById('sync-gh-repo').value = ghRepoOk()?getGhRepo():'';
@@ -1495,6 +1500,7 @@ function saveFormulario(){
   CFG.form.okTitle=document.getElementById('f-ok-title').value;
   CFG.form.okMsg=document.getElementById('f-ok-msg').value;
   CFG.form.formspree=document.getElementById('f-formspree').value;
+  CFG.form.sheetsUrl=document.getElementById('f-sheets').value.trim();
   CFG.form.fields=Array.from(document.querySelectorAll('#f-fields-list .adm-field-item')).map(d=>({
     id: d.querySelector('.ff-id').value.trim().replace(/\s+/g,'_').toLowerCase(),
     label: d.querySelector('.ff-label').value,

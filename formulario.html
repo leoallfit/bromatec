@@ -116,8 +116,8 @@
 const GH_REPO = (localStorage.getItem('bromatec_gh_repo')||'leoallfit/bromatec').trim();
 const GH_RAW = GH_REPO ? `https://raw.githubusercontent.com/${GH_REPO}/main/config.json` : '';
 const FSPREE_FALLBACK = '';
-// ↓ Pegá acá la URL del Web App de Google Apps Script (opcional, para guardar los leads en una planilla)
-const SHEETS_URL = '';
+// URL del Web App de Google Apps Script (CRM). Se carga desde la config del panel.
+let SHEETS_URL = '';
 
 const DEFAULT_FIELDS = [
   {id:'nombre',          label:'Nombre y apellido',          type:'text',    required:true,  errMsg:'Ingresá tu nombre',          half:true},
@@ -184,6 +184,7 @@ function loadFromStorage(){
       if(c.form){
         if(c.form.fields && c.form.fields.length) currentFields = c.form.fields;
         if(c.form.formspree) currentFspree = c.form.formspree;
+        if(c.form.sheetsUrl) SHEETS_URL = c.form.sheetsUrl;
         if(c.form.btn) currentBtn = c.form.btn;
         if(c.form.okTitle) document.getElementById('ok-title').textContent = c.form.okTitle;
         if(c.form.okMsg)   document.getElementById('ok-msg').textContent   = c.form.okMsg;
@@ -201,6 +202,7 @@ function loadFromGitHub(){
       if(!j || !j.form) return;
       if(j.form.fields && j.form.fields.length) currentFields = j.form.fields;
       if(j.form.formspree) currentFspree = j.form.formspree;
+      if(j.form.sheetsUrl) SHEETS_URL = j.form.sheetsUrl;
       if(j.form.btn) currentBtn = j.form.btn;
       if(j.form.okTitle) document.getElementById('ok-title').textContent = j.form.okTitle;
       if(j.form.okMsg)   document.getElementById('ok-msg').textContent   = j.form.okMsg;
@@ -284,30 +286,48 @@ document.getElementById('consultaForm').addEventListener('submit', async functio
     if(el) formData[f.label || f.id] = el.value;
   });
 
-  try{
-    const res = await fetch('https://formspree.io/f/TU_FORM_ID', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    const data = await res.json().catch(()=>({}));
-    if(!res.ok || data.ok === false) throw new Error(data.error || 'HTTP ' + res.status);
+  // Si no hay ningún destino configurado, avisar (no perder el lead en silencio)
+  if(!SHEETS_URL && !currentFspree){
+    document.getElementById('btn-text').textContent = '⚠️ Falta configurar el destino (Google Sheets)';
+    btn.disabled = false;
+    return;
+  }
 
-    // CRM: enviar a Google Sheets (fire & forget, no bloquea el flujo)
-    if(SHEETS_URL){
+  let sent = false, lastErr = null;
+
+  // 1) CRM en Google Sheets (destino principal)
+  if(SHEETS_URL){
+    try{
       const sheetsData = Object.assign({ _fecha: new Date().toISOString() }, formData);
-      fetch(SHEETS_URL, {
+      await fetch(SHEETS_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+        mode: 'no-cors',                       // Apps Script no manda CORS: respuesta opaca
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(sheetsData)
-      }).catch(()=>{});
-    }
+      });
+      sent = true;                             // enviado (no podemos leer la respuesta opaca)
+    }catch(err){ lastErr = err; }
+  }
 
+  // 2) Formspree (opcional, además del Sheets)
+  if(currentFspree){
+    try{
+      const res = await fetch('https://formspree.io/f/' + currentFspree, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json().catch(()=>({}));
+      if(res.ok && data.ok !== false) sent = true;
+      else if(!sent) lastErr = new Error(data.error || 'HTTP ' + res.status);
+    }catch(err){ if(!sent) lastErr = err; }
+  }
+
+  if(sent){
     this.style.display = 'none';
     document.getElementById('formSuccess').classList.add('show');
-  }catch(err){
-    document.getElementById('btn-text').textContent = '⚠️ ' + err.message;
+  }else{
+    document.getElementById('btn-text').textContent = '⚠️ ' + ((lastErr && lastErr.message) || 'No se pudo enviar');
     btn.disabled = false;
   }
 });
