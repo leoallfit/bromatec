@@ -2108,17 +2108,8 @@ document.querySelectorAll('img').forEach(img => {
 // 5. Bloquear si se abre en iframe (clickjacking)
 if(window.self !== window.top){ window.top.location = window.self.location; }
 
-// 6. Detección de DevTools por diferencia de tamaño de ventana
-(function detectDevTools(){
-  const threshold = 160;
-  function check(){
-    if(window.outerWidth - window.innerWidth > threshold ||
-       window.outerHeight - window.innerHeight > threshold){
-      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;font-size:18px;color:#374151">🔒 Acceso no permitido</div>';
-    }
-  }
-  setInterval(check, 1000);
-})();
+// 6. (Removido) Antes había un detector de DevTools que borraba la página;
+//    daba falsos positivos en algunos navegadores/celulares, así que se quitó.
 </script>
 </body>
 </html>
