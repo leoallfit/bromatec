@@ -283,16 +283,42 @@ document.getElementById('consultaForm').addEventListener('submit', async functio
   let sent = false, lastErr = null;
 
   // 1) CRM en Google Sheets (destino principal)
+  // Usamos un form invisible con iframe como destino. Esto evita problemas de
+  // CORS, CSP y los redirects internos de Apps Script (script.googleusercontent.com).
   if(SHEETS_URL){
     try{
       const sheetsData = Object.assign({ _fecha: new Date().toISOString() }, formData);
-      await fetch(SHEETS_URL, {
-        method: 'POST',
-        mode: 'no-cors',                       // Apps Script no manda CORS: respuesta opaca
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(sheetsData)
+      await new Promise((resolve)=>{
+        // iframe destino
+        let iframe = document.getElementById('sheets-target');
+        if(!iframe){
+          iframe = document.createElement('iframe');
+          iframe.name = 'sheets-target';
+          iframe.id   = 'sheets-target';
+          iframe.style.display = 'none';
+          document.body.appendChild(iframe);
+        }
+        // form oculto
+        const form = document.createElement('form');
+        form.method  = 'POST';
+        form.action  = SHEETS_URL;
+        form.target  = 'sheets-target';
+        form.enctype = 'application/x-www-form-urlencoded';
+        Object.keys(sheetsData).forEach(k=>{
+          const inp = document.createElement('input');
+          inp.type  = 'hidden';
+          inp.name  = k;
+          inp.value = sheetsData[k] == null ? '' : String(sheetsData[k]);
+          form.appendChild(inp);
+        });
+        document.body.appendChild(form);
+        // resolver cuando el iframe cargue la respuesta, o por timeout (Apps Script puede demorar)
+        const done = ()=>{ try{ form.remove(); }catch(e){} resolve(); };
+        iframe.onload = done;
+        setTimeout(done, 6000);
+        form.submit();
       });
-      sent = true;                             // enviado (no podemos leer la respuesta opaca)
+      sent = true;
     }catch(err){ lastErr = err; }
   }
 

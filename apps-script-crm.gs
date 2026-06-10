@@ -16,7 +16,17 @@ function doPost(e) {
     var sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
 
-    var data = JSON.parse(e.postData.contents);
+    // El formulario manda como form-urlencoded (campos en e.parameter).
+    // Si en cambio viniera JSON puro (versiones viejas), parseamos e.postData.contents.
+    var data;
+    if (e.parameter && Object.keys(e.parameter).length > 0) {
+      data = e.parameter;
+    } else if (e.postData && e.postData.contents) {
+      try { data = JSON.parse(e.postData.contents); }
+      catch (parseErr) { data = {}; }
+    } else {
+      data = {};
+    }
 
     // ── Columnas fijas siempre primero ──
     var FIXED = ['Fecha', 'Estado'];
