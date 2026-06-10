@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://formspree.io https://api.github.com https://raw.githubusercontent.com https://script.google.com; frame-ancestors 'none'"/>
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+  <title>Formulario de Consulta – BROMATEC</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0C1F17;color:#F1F5F9;line-height:1.6;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none}
+    input,textarea,select{-webkit-user-select:text;user-select:text}
+    a{text-decoration:none;color:inherit}
+
+    .navbar{background:#0C3B26;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+    .nav-logo{font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px}
+    .nav-logo span{color:#5EEAD4}
+    .nav-back{font-size:13px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:6px;transition:color .2s}
+    .nav-back:hover{color:#fff}
+
+    .page-hero{text-align:center;padding:48px 24px 40px;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(22,163,74,.2) 0%,transparent 65%);pointer-events:none}
+    .hero-label{display:inline-block;background:rgba(110,231,183,.12);border:1px solid rgba(110,231,183,.3);color:#6EE7B7;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:6px 16px;border-radius:100px;font-style:italic;margin-bottom:20px}
+    .page-hero h1{font-size:clamp(24px,5vw,38px);font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.5px;margin-bottom:12px}
+    .page-hero h1 em{font-style:normal;color:#5EEAD4}
+    .page-hero p{font-size:15px;color:#94A3B8;max-width:440px;margin:0 auto}
+
+    .form-wrap{max-width:680px;margin:0 auto;padding:0 24px 80px}
+    .form-card{background:#152A20;border-radius:20px;padding:40px;box-shadow:0 24px 80px rgba(0,0,0,.5);border:1px solid #334155}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    .form-group label{font-size:13px;font-weight:600;color:#94A3B8}
+    .req{color:#5EEAD4;margin-left:2px}
+    .form-input{padding:12px 16px;border-radius:10px;border:1.5px solid #334155;font-size:14px;font-family:inherit;color:#F1F5F9;background:#0C1F17;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+    .form-input:focus{border-color:#16A34A;box-shadow:0 0 0 3px rgba(22,163,74,.15);background:#0C1F17}
+    .form-input:-webkit-autofill,.form-input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #0C1F17 inset;-webkit-text-fill-color:#F1F5F9}
+    .form-input.error{border-color:#EF4444}
+    select.form-input option{background:#152A20;color:#F1F5F9}
+    textarea.form-input{resize:vertical;min-height:90px}
+    .field-error{font-size:12px;color:#F87171;display:none;margin-top:2px}
+    .field-error.show{display:block}
+
+    .submit-wrap{grid-column:1/-1;margin-top:8px}
+    .submit-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 32px;background:#16A34A;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:12px;cursor:pointer;font-family:inherit;transition:background .2s,transform .2s;letter-spacing:.04em;box-shadow:0 4px 24px rgba(22,163,74,.4)}
+    .submit-btn:hover{background:#15803D;transform:translateY(-1px)}
+    .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .form-note{font-size:12px;color:#475569;text-align:center;margin-top:14px}
+
+    .form-success{display:none;text-align:center;padding:48px 24px}
+    .form-success.show{display:block}
+    .success-icon{width:72px;height:72px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;border:1px solid rgba(16,185,129,.3)}
+    .success-icon svg{width:36px;height:36px}
+    .form-success h3{font-size:24px;font-weight:800;color:#F1F5F9;margin-bottom:12px}
+    .form-success p{font-size:15px;color:#94A3B8;max-width:400px;margin:0 auto 28px}
+    .back-btn{display:inline-flex;align-items:center;gap:8px;color:#5EEAD4;font-size:14px;font-weight:600}
+
+    .footer-simple{border-top:1px solid #152A20;padding:24px;text-align:center;font-size:12px;color:#475569}
+    .footer-simple a{color:#5EEAD4}
+
+    @media(max-width:640px){
+      .form-card{padding:28px 20px}
+      .form-grid{grid-template-columns:1fr}
+      .form-group.full{grid-column:1}
+      .submit-wrap{grid-column:1}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">BROMA<span>TEC</span></a>
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Volver al inicio
+  </a>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-label">Contacto</div>
+  <h1>Contame sobre <em>tu comercio</em></h1>
+  <p>Completá el formulario y en menos de 24 hs te contacto para coordinar una visita a tu local.</p>
+</div>
+
+<div class="form-wrap">
+  <div class="form-card">
+    <form id="consultaForm" novalidate>
+      <!-- Honeypot anti-spam: los bots llenan este campo, los humanos no lo ven -->
+      <input type="text" name="_gotcha" id="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;pointer-events:none"/>
+      <div class="form-grid" id="form-fields-container">
+        <!-- Campos renderizados dinámicamente -->
+      </div>
+    </form>
+    <div class="form-success" id="formSuccess">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3 id="ok-title">¡Listo, te contacto pronto!</h3>
+      <p id="ok-msg">Recibí tus datos y en menos de 24 hs me comunico con vos para coordinar la visita a tu local. ¡Gracias!</p>
+      <a href="index.html" class="back-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Volver al inicio
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="footer-simple">
+  © 2026 BROMATEC · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a>
+</div>
+
+<script>
+const GH_REPO = (localStorage.getItem('bromatec_gh_repo')||'').trim();
+const GH_RAW = GH_REPO ? `https://raw.githubusercontent.com/${GH_REPO}/main/config.json` : '';
+const FSPREE_FALLBACK = '';
+// ↓ Pegá acá la URL del Web App de Google Apps Script (opcional, para guardar los leads en una planilla)
+const SHEETS_URL = '';
+
+const DEFAULT_FIELDS = [
+  {id:'nombre',          label:'Nombre y apellido',          type:'text',    required:true,  errMsg:'Ingresá tu nombre',          half:true},
+  {id:'email',           label:'Email',                      type:'email',   required:true,  errMsg:'Email inválido',             half:true},
+  {id:'whatsapp',        label:'WhatsApp',                   type:'tel',     required:true,  errMsg:'Ingresá tu WhatsApp',        half:true},
+  {id:'comercio',        label:'Nombre del comercio',        type:'text',    required:false, errMsg:'',                           half:true},
+  {id:'rubro',           label:'Rubro del comercio',         type:'select',  required:true,  errMsg:'Seleccioná una opción',      half:true, options:'Rotisería / Restaurante|Panadería / Pastelería|Elaboración de alimentos|Almacén / Despensa|Food truck / Carrito|Vinoteca / Bebidas|Catering / Eventos|Otro'},
+  {id:'ubicacion',       label:'Localidad o barrio',         type:'text',    required:false, errMsg:'',                           half:true, placeholder:'Córdoba'},
+  {id:'servicio',        label:'¿Qué necesitás?',            type:'select',  required:true,  errMsg:'Seleccioná una opción',      half:false,options:'Dirección técnica|Habilitación municipal|Registro de productos (RNE / RNPA)|Capacitación del personal|Auditoría / preparar inspección|No estoy seguro, necesito orientación'},
+  {id:'estado',          label:'Estado del comercio',        type:'select',  required:false, errMsg:'',                           half:true, options:'Por abrir|Ya funcionando|Con intimación o clausura'},
+  {id:'personal',        label:'Cantidad de empleados',      type:'number',  required:false, errMsg:'',                           half:true},
+  {id:'mensaje',         label:'Contame tu situación',       type:'textarea',required:false, errMsg:'',                           half:false},
+  {id:'como_encontraste',label:'¿Cómo me encontraste?',     type:'select',  required:false, errMsg:'',                           half:true, options:'Instagram|Recomendación|Google|Otro'}
+];
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+let currentFields = DEFAULT_FIELDS;
+let currentFspree = FSPREE_FALLBACK;
+let currentBtn    = 'QUIERO MI ASESORÍA';
+
+function renderFields(fields, btn){
+  currentFields = fields;
+  currentBtn = btn || currentBtn;
+  const c = document.getElementById('form-fields-container');
+  if(!c) return;
+  // Preserve nombre if already typed
+  const prevNombre = (document.getElementById('ff-nombre')||{}).value || '';
+  c.innerHTML = fields.map(f => {
+    const half = f.half !== false;
+    let inp = '';
+    if(f.type === 'select'){
+      const opts = (f.options||'').split('|').filter(Boolean).map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('');
+      inp = `<select name="${esc(f.id)}" id="ff-${esc(f.id)}" class="form-input"><option value="">Seleccioná...</option>${opts}</select>`;
+    } else if(f.type === 'textarea'){
+      inp = `<textarea name="${esc(f.id)}" id="ff-${esc(f.id)}" class="form-input" maxlength="150"></textarea>`;
+    } else {
+      inp = `<input type="${esc(f.type||'text')}" name="${esc(f.id)}" id="ff-${esc(f.id)}" class="form-input" maxlength="150"${f.placeholder?' placeholder="'+esc(f.placeholder)+'"':''}/>`;
+    }
+    return `<div class="form-group${half?'':' full'}">
+      <label for="ff-${esc(f.id)}">${esc(f.label)}${f.required?'<span class="req"> *</span>':''}</label>
+      ${inp}
+      ${f.required?`<span class="field-error" id="err-${esc(f.id)}">${esc(f.errMsg||'Campo requerido')}</span>`:''}
+    </div>`;
+  }).join('') + `
+  <div class="submit-wrap">
+    <button type="submit" class="submit-btn" id="submit-btn">
+      <span id="btn-text">${esc(currentBtn)}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <p class="form-note">🔒 Tu información es privada y nunca se comparte con terceros</p>
+  </div>`;
+  // Restore nombre
+  const nEl = document.getElementById('ff-nombre');
+  if(nEl && prevNombre) nEl.value = prevNombre;
+}
+
+// Load from localStorage
+function loadFromStorage(){
+  try{
+    const s = localStorage.getItem('bromatec_cfg');
+    if(s){
+      const c = JSON.parse(s);
+      if(c.form){
+        if(c.form.fields && c.form.fields.length) currentFields = c.form.fields;
+        if(c.form.formspree) currentFspree = c.form.formspree;
+        if(c.form.btn) currentBtn = c.form.btn;
+        if(c.form.okTitle) document.getElementById('ok-title').textContent = c.form.okTitle;
+        if(c.form.okMsg)   document.getElementById('ok-msg').textContent   = c.form.okMsg;
+      }
+    }
+  }catch(e){}
+}
+
+// Load from GitHub
+function loadFromGitHub(){
+  if(!GH_RAW) return;   // sin repo configurado: usa lo guardado localmente
+  fetch(GH_RAW + '?t=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .then(j => {
+      if(!j || !j.form) return;
+      if(j.form.fields && j.form.fields.length) currentFields = j.form.fields;
+      if(j.form.formspree) currentFspree = j.form.formspree;
+      if(j.form.btn) currentBtn = j.form.btn;
+      if(j.form.okTitle) document.getElementById('ok-title').textContent = j.form.okTitle;
+      if(j.form.okMsg)   document.getElementById('ok-msg').textContent   = j.form.okMsg;
+      renderFields(currentFields, currentBtn);
+      prefillNombre();
+    }).catch(()=>{});
+}
+
+// Pre-fill nombre from URL
+function prefillNombre(){
+  const params = new URLSearchParams(window.location.search);
+  const nombre = params.get('nombre');
+  const el = document.getElementById('ff-nombre');
+  if(nombre && el) el.value = nombre;
+}
+
+// Init
+loadFromStorage();
+renderFields(currentFields, currentBtn);
+prefillNombre();
+loadFromGitHub();
+
+// Si viene de un envío exitoso, mostrar success
+if(new URLSearchParams(window.location.search).get('enviado') === '1'){
+  document.getElementById('consultaForm').style.display = 'none';
+  document.getElementById('formSuccess').classList.add('show');
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
+// Protección de contenido
+if(window.self !== window.top){ window.top.location = window.self.location; }
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if(ctrl && ['u','s','p'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+  if(ctrl && e.shiftKey && ['i','j','c','k'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+  if(e.key === 'F12') e.preventDefault();
+});
+(function detectDevTools(){
+  const threshold = 160;
+  setInterval(function(){
+    if(window.outerWidth - window.innerWidth > threshold ||
+       window.outerHeight - window.innerHeight > threshold){
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;font-size:18px;color:#F1F5F9;background:#0C1F17">🔒 Acceso no permitido</div>';
+    }
+  }, 1000);
+})();
+
+const _formLoadTime = Date.now();
+
+// Submit — valida y envía con fetch+JSON (igual que leoallfit.github.io/form/)
+document.getElementById('consultaForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  // Anti-spam: honeypot relleno = bot
+  if(document.getElementById('_gotcha').value) return;
+  // Anti-spam: enviado en menos de 4 segundos = bot
+  if(Date.now() - _formLoadTime < 4000) return;
+  let valid = true;
+  currentFields.filter(f => f.required).forEach(f => {
+    const el  = document.getElementById('ff-' + f.id);
+    const err = document.getElementById('err-' + f.id);
+    if(!el) return;
+    const ok = f.type === 'email'
+      ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)
+      : el.value.trim() !== '';
+    el.classList.toggle('error', !ok);
+    if(err) err.classList.toggle('show', !ok);
+    if(!ok) valid = false;
+  });
+  if(!valid) return;
+
+  const btn = document.getElementById('submit-btn');
+  document.getElementById('btn-text').textContent = 'Enviando...';
+  btn.disabled = true;
+
+  // Armar objeto con todos los campos
+  const formData = {};
+  currentFields.forEach(f => {
+    const el = document.getElementById('ff-' + f.id);
+    if(el) formData[f.label || f.id] = el.value;
+  });
+
+  try{
+    const res = await fetch('https://formspree.io/f/TU_FORM_ID', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok || data.ok === false) throw new Error(data.error || 'HTTP ' + res.status);
+
+    // CRM: enviar a Google Sheets (fire & forget, no bloquea el flujo)
+    if(SHEETS_URL){
+      const sheetsData = Object.assign({ _fecha: new Date().toISOString() }, formData);
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(sheetsData)
+      }).catch(()=>{});
+    }
+
+    this.style.display = 'none';
+    document.getElementById('formSuccess').classList.add('show');
+  }catch(err){
+    document.getElementById('btn-text').textContent = '⚠️ ' + err.message;
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
