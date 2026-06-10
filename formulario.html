@@ -11,8 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Spectral:wght@500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Inter',sans-serif;background:#0C1F17;color:#F1F5F9;line-height:1.6;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none}
-    input,textarea,select{-webkit-user-select:text;user-select:text}
+    body{font-family:'Inter',sans-serif;background:#0C1F17;color:#F1F5F9;line-height:1.6;-webkit-font-smoothing:antialiased}
     a{text-decoration:none;color:inherit}
 
     .navbar{background:#0C3B26;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
@@ -232,16 +231,9 @@ if(new URLSearchParams(window.location.search).get('enviado') === '1'){
   window.history.replaceState({}, '', window.location.pathname);
 }
 
-// Protección de contenido
+// Protección anti-iframe (clickjacking) — sí útil, esto se queda
 if(window.self !== window.top){ window.top.location = window.self.location; }
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-  const ctrl = e.ctrlKey || e.metaKey;
-  if(ctrl && ['u','s','p'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
-  if(ctrl && e.shiftKey && ['i','j','c','k'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
-  if(e.key === 'F12') e.preventDefault();
-});
-// (Removido) Detector de DevTools que borraba la página: daba falsos positivos.
+// (Removidos) clic derecho, atajos de teclado y detector de DevTools.
 
 const _formLoadTime = Date.now();
 
