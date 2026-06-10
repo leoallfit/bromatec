@@ -463,6 +463,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
      <div class="adm-sec" id="sec-valor">
       <div class="adm-card">
        <div class="adm-card-ttl">Encabezado de sección</div>
+       <div class="adm-f"><label>Rótulo (etiqueta chica arriba del título)</label><input id="c-val-label"/></div>
        <div class="adm-row">
         <div class="adm-f"><label>Título</label><input id="c-val-title"/></div>
         <div class="adm-f"><label>Subtítulo</label><input id="c-val-sub"/></div>
@@ -479,6 +480,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
      <div class="adm-sec" id="sec-pilares">
       <div class="adm-card">
        <div class="adm-card-ttl">Encabezado de sección</div>
+       <div class="adm-f"><label>Rótulo (etiqueta chica arriba del título)</label><input id="c-pil-label"/></div>
        <div class="adm-row">
         <div class="adm-f"><label>Título</label><input id="c-pil-title"/></div>
         <div class="adm-f"><label>Subtítulo</label><input id="c-pil-sub"/></div>
@@ -493,8 +495,19 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 
      <!-- TESTIMONIOS -->
      <div class="adm-sec" id="sec-testimonios">
-      <div id="testi-items"></div>
-      <button id="add-testi" class="adm-add-btn">＋ Agregar testimonio</button>
+      <div class="adm-card">
+       <div class="adm-card-ttl">Encabezado de sección</div>
+       <div class="adm-f"><label>Rótulo (etiqueta chica)</label><input id="c-testi-label"/></div>
+       <div class="adm-row">
+        <div class="adm-f"><label>Título</label><input id="c-testi-title"/></div>
+        <div class="adm-f"><label>Subtítulo</label><input id="c-testi-sub"/></div>
+       </div>
+      </div>
+      <div class="adm-card">
+       <div class="adm-card-ttl">Testimonios</div>
+       <div id="testi-items"></div>
+       <button id="add-testi" class="adm-add-btn">＋ Agregar testimonio</button>
+      </div>
      </div>
 
      <!-- COLORES -->
@@ -535,6 +548,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
      <div class="adm-sec" id="sec-formulario">
       <div class="adm-card">
        <div class="adm-card-ttl">Textos del formulario</div>
+       <div class="adm-f"><label>Rótulo (etiqueta chica arriba del título)</label><input id="f-label"/></div>
        <div class="adm-row">
         <div class="adm-f"><label>Título</label><input id="f-title"/></div>
         <div class="adm-f"><label>Subtítulo</label><input id="f-sub"/></div>
@@ -571,6 +585,11 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
         <div class="adm-f"><label>Tagline</label><input id="c-foot-tag"/></div>
         <div class="adm-f"><label>Texto copyright</label><input id="c-foot-copy"/></div>
        </div>
+      </div>
+      <div class="adm-card">
+       <div class="adm-card-ttl">SEO · Pestaña del navegador</div>
+       <div class="adm-f"><label>Título de la página (lo que se ve en la pestaña y en Google)</label><input id="c-seo-title"/></div>
+       <div class="adm-f"><label>Descripción (resumen para Google, ~150 caracteres)</label><textarea id="c-seo-desc"></textarea></div>
       </div>
      </div>
 
@@ -666,9 +685,9 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 
 <section class="testimonials-section section-pad" id="testimonios">
   <div class="container">
-    <span class="section-label animate">Comercios que confían</span>
-    <h2 class="section-title animate">Lo que dicen mis clientes</h2>
-    <p class="section-sub animate">Locales gastronómicos y elaboradores de Córdoba que hoy trabajan tranquilos y en regla.</p>
+    <span class="section-label animate" id="testi-label">Comercios que confían</span>
+    <h2 class="section-title animate" id="testi-title">Lo que dicen mis clientes</h2>
+    <p class="section-sub animate" id="testi-sub">Locales gastronómicos y elaboradores de Córdoba que hoy trabajan tranquilos y en regla.</p>
     <div class="marquee-outer" id="marquee-outer">
       <div class="testimonials-grid" id="testi-grid"></div>
     </div>
@@ -678,7 +697,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 <section class="form-section section-pad" id="formulario">
   <div class="container">
     <div class="form-header">
-      <span class="section-label">Contacto</span>
+      <span class="section-label" id="form-label">Contacto</span>
       <h2 class="section-title" id="form-title">Comenzá tu transformación hoy</h2>
       <p class="section-sub" id="form-sub">Completá el formulario y me pongo en contacto con vos 🚀</p>
     </div>
@@ -752,6 +771,7 @@ const DEFAULT = {
     stats:[{v:'+10 años',l:'De experiencia en seguridad alimentaria'},{v:'Córdoba',l:'Atención presencial en tu establecimiento'},{v:'Matriculado/a',l:'Respaldo profesional ante la autoridad'}]
   },
   value:{
+    label:'Servicios',
     title:'Gestión bromatológica integral para tu comercio', sub:'Un único responsable técnico para la habilitación, la inocuidad y la capacitación de tu establecimiento en Córdoba.',
     items:[
       {icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',title:'Dirección técnica presencial',desc:'Asumo como director técnico responsable de tu establecimiento: superviso los procesos en el lugar y respaldo la operación ante el municipio y la provincia.'},
@@ -761,6 +781,7 @@ const DEFAULT = {
     ]
   },
   pillars:{
+    label:'Cómo trabajo',
     title:'Por qué confiar la dirección técnica a un profesional presente', sub:'No es asesoría a distancia: trabajo en tu establecimiento, en Córdoba, durante todo el proceso.',
     items:[
       {n:'01',color:'blue',title:'Presencia en el establecimiento',desc:'Trabajo en tu local: superviso cocina, depósitos y procesos donde realmente ocurren. La inocuidad y la habilitación se resuelven en el lugar, no por correo.',imageUrl:''},
@@ -773,10 +794,12 @@ const DEFAULT = {
     {avatar:'M',avatarUrl:'',name:'Martín · Panadería',age:'',result:'Inspección sin observaciones',text:'Vino al local, revisó cada sector y nos preparó para la inspección de bromatología. La pasamos sin una sola observación. Lo recomiendo.',rating:5,beforeUrl:'',afterUrl:''},
     {avatar:'L',avatarUrl:'',name:'Lucía · Almacén',age:'',result:'RNPA de productos propios',text:'Quería registrar productos propios y no sabía por dónde empezar. Me guió en todo el RNPA y la dirección técnica. Un profesional serio y siempre presente.',rating:5,beforeUrl:'',afterUrl:''}
   ],
+  testiHead:{ label:'Comercios que confían', title:'Lo que dicen mis clientes', sub:'Locales gastronómicos y elaboradores de Córdoba que hoy trabajan tranquilos y en regla.' },
+  seo:{ title:'BROMATEC – Dirección técnica bromatológica en Córdoba', desc:'Dirección técnica, habilitaciones, registros y capacitación en seguridad alimentaria para comercios y elaboradores de alimentos en Córdoba. Atención presencial.' },
   cta:{ title:'¿Necesitás regularizar tu comercio de alimentos?', sub:'Coordinemos una visita a tu establecimiento en Córdoba. La primera consulta no tiene costo ni compromiso.', btn:'SOLICITAR UNA CONSULTA' },
   social:{ ig:'', yt:'', li:'', wa:'', email:'tucorreo@ejemplo.com' },
   footer:{ tagline:'Dirección técnica bromatológica, habilitaciones y capacitación para comercios de alimentos en Córdoba.', copy:'© 2026 BROMATEC. Todos los derechos reservados.' },
-  form:{ title:'Contame sobre tu establecimiento', sub:'Completá el formulario y dentro de las 24 hs me comunico con vos para coordinar una visita.', btn:'SOLICITAR UNA CONSULTA', okTitle:'Consulta recibida', okMsg:'Recibí tus datos y dentro de las 24 hs me comunico con vos para coordinar la visita a tu establecimiento. Gracias por tu interés.', formspree:'',
+  form:{ label:'Contacto', title:'Contame sobre tu establecimiento', sub:'Completá el formulario y dentro de las 24 hs me comunico con vos para coordinar una visita.', btn:'SOLICITAR UNA CONSULTA', okTitle:'Consulta recibida', okMsg:'Recibí tus datos y dentro de las 24 hs me comunico con vos para coordinar la visita a tu establecimiento. Gracias por tu interés.', formspree:'',
     fields:[
       {id:'nombre',          label:'Nombre y apellido',          type:'text',    required:true,  errMsg:'Ingresá tu nombre',          half:true},
       {id:'email',           label:'Email',                      type:'email',   required:true,  errMsg:'Email inválido',             half:true},
@@ -835,7 +858,7 @@ function renderHero(h){
 
 function renderValue(v){
   document.getElementById('value-container').innerHTML=`
-    <span class="section-label animate">Servicios</span>
+    <span class="section-label animate">${esc(v.label||'Servicios')}</span>
     <h2 class="section-title animate">${esc(v.title)}</h2>
     <p class="section-sub animate">${esc(v.sub)}</p>
     <div class="value-grid">${(v.items||[]).map(i=>`
@@ -853,7 +876,7 @@ const PILAR_ICONS={
 };
 function renderPillars(p){
   document.getElementById('pillars-container').innerHTML=`
-    <span class="section-label animate">Cómo trabajo</span>
+    <span class="section-label animate">${esc(p.label||'Cómo trabajo')}</span>
     <h2 class="section-title animate">${esc(p.title)}</h2>
     <p class="section-sub animate">${esc(p.sub)}</p>
     <div class="pillars-grid">${(p.items||[]).map(i=>`
@@ -947,6 +970,21 @@ function renderFormFields(fields, btnText){
   <p class="form-note">🔒 Tu información está segura.</p>`;
 }
 
+function renderHeadings(cfg){
+  // Encabezado de la sección Testimonios
+  const th=cfg.testiHead||{};
+  const setTxt=(id,val)=>{const el=document.getElementById(id);if(el&&val!=null)el.textContent=val;};
+  setTxt('testi-label',th.label);
+  setTxt('testi-title',th.title);
+  setTxt('testi-sub',th.sub);
+  // Rótulo de la sección Formulario
+  setTxt('form-label',(cfg.form||{}).label);
+  // SEO / pestaña del navegador
+  const seo=cfg.seo||{};
+  if(seo.title){ document.title=seo.title; setTxt('page-title',seo.title); }
+  if(seo.desc){ const d=document.getElementById('page-desc'); if(d) d.setAttribute('content',seo.desc); }
+}
+
 function renderAll(){
   applyColors(CFG.colors);
   renderHero(CFG.hero);
@@ -958,6 +996,7 @@ function renderAll(){
   renderSocial(CFG.social);
   renderFooter(CFG.footer);
   renderForm(CFG.form);
+  renderHeadings(CFG);
   initAnimations();
 }
 
@@ -1241,10 +1280,12 @@ function populateAdmin(){
     if(vi) vi.value=s.v||''; if(li) li.value=s.l||'';
   });
   // value items
+  document.getElementById('c-val-label').value=c.value.label||'';
   document.getElementById('c-val-title').value=c.value.title||'';
   document.getElementById('c-val-sub').value=c.value.sub||'';
   document.getElementById('c-val-items').innerHTML=(c.value.items||[]).map((it,i)=>valItemHtml(it,i)).join('');
   // pillars
+  document.getElementById('c-pil-label').value=c.pillars.label||'';
   document.getElementById('c-pil-title').value=c.pillars.title||'';
   document.getElementById('c-pil-sub').value=c.pillars.sub||'';
   document.getElementById('c-pil-items').innerHTML=(c.pillars.items||[]).map((it,i)=>pilItemHtml(it,i)).join('');
@@ -1255,6 +1296,9 @@ function populateAdmin(){
   // footer
   document.getElementById('c-foot-tag').value=c.footer.tagline||'';
   document.getElementById('c-foot-copy').value=c.footer.copy||'';
+  // seo
+  document.getElementById('c-seo-title').value=(c.seo||{}).title||'';
+  document.getElementById('c-seo-desc').value=(c.seo||{}).desc||'';
   // colors
   const colorDefs=[
     {k:'primary',l:'Primario (botones)'},{k:'accent',l:'Acento (verde principal)'},
@@ -1283,6 +1327,9 @@ function populateAdmin(){
     });
   });
   // testimonials
+  document.getElementById('c-testi-label').value=(c.testiHead||{}).label||'';
+  document.getElementById('c-testi-title').value=(c.testiHead||{}).title||'';
+  document.getElementById('c-testi-sub').value=(c.testiHead||{}).sub||'';
   document.getElementById('testi-items').innerHTML=(c.testimonials||[]).map((t,i)=>testiItemHtml(t,i)).join('');
   setupUploadListeners();
   setupClearBtns();
@@ -1293,6 +1340,7 @@ function populateAdmin(){
   document.getElementById('r-wa').value=c.social.wa||'';
   document.getElementById('r-email').value=c.social.email||'';
   // form
+  document.getElementById('f-label').value=c.form.label||'';
   document.getElementById('f-title').value=c.form.title||'';
   document.getElementById('f-sub').value=c.form.sub||'';
   document.getElementById('f-btn').value=c.form.btn||'';
@@ -1363,6 +1411,7 @@ function saveHero(){
   saveCfg(CFG); renderHero(CFG.hero); admToast('✅ Hero guardado'); autoPublish();
 }
 function saveValor(){
+  CFG.value.label=document.getElementById('c-val-label').value;
   CFG.value.title=document.getElementById('c-val-title').value;
   CFG.value.sub=document.getElementById('c-val-sub').value;
   CFG.value.items=Array.from(document.querySelectorAll('#c-val-items .adm-val-item')).map(d=>({
@@ -1373,6 +1422,7 @@ function saveValor(){
   saveCfg(CFG); renderValue(CFG.value); initAnimations(); admToast('✅ Beneficios guardados'); autoPublish();
 }
 function savePilares(){
+  CFG.pillars.label=document.getElementById('c-pil-label').value;
   CFG.pillars.title=document.getElementById('c-pil-title').value;
   CFG.pillars.sub=document.getElementById('c-pil-sub').value;
   CFG.pillars.items=Array.from(document.querySelectorAll('#c-pil-items .adm-pil-item')).map((d,i)=>({
@@ -1385,6 +1435,11 @@ function savePilares(){
   saveCfg(CFG); renderPillars(CFG.pillars); initAnimations(); admToast('✅ Pilares guardados'); autoPublish();
 }
 function saveTestimonios(){
+  CFG.testiHead={
+    label:document.getElementById('c-testi-label').value,
+    title:document.getElementById('c-testi-title').value,
+    sub:document.getElementById('c-testi-sub').value
+  };
   CFG.testimonials=Array.from(document.querySelectorAll('#testi-items .adm-testi-item')).map((d,i)=>({
     name:d.querySelector('.tt-name').value,
     age:parseInt(d.querySelector('.tt-age').value)||0,
@@ -1396,7 +1451,7 @@ function saveTestimonios(){
     beforeUrl:CFG.testimonials[i]?CFG.testimonials[i].beforeUrl||'':'',
     afterUrl:CFG.testimonials[i]?CFG.testimonials[i].afterUrl||'':''
   }));
-  saveCfg(CFG); renderTestimonials(CFG.testimonials); initCarousel(); admToast('✅ Testimonios guardados'); autoPublish();
+  saveCfg(CFG); renderTestimonials(CFG.testimonials); renderHeadings(CFG); initCarousel(); admToast('✅ Testimonios guardados'); autoPublish();
 }
 function saveColores(){
   saveCfg(CFG); applyColors(CFG.colors); admToast('✅ Colores guardados'); autoPublish();
@@ -1410,6 +1465,7 @@ function saveRedes(){
   saveCfg(CFG); renderSocial(CFG.social); admToast('✅ Redes guardadas'); autoPublish();
 }
 function saveFormulario(){
+  CFG.form.label=document.getElementById('f-label').value;
   CFG.form.title=document.getElementById('f-title').value;
   CFG.form.sub=document.getElementById('f-sub').value;
   CFG.form.btn=document.getElementById('f-btn').value;
@@ -1425,7 +1481,7 @@ function saveFormulario(){
     half: d.querySelector('.ff-half').value==='half',
     options: d.querySelector('.ff-options').value
   }));
-  saveCfg(CFG); renderForm(CFG.form); admToast('✅ Formulario guardado'); autoPublish();
+  saveCfg(CFG); renderForm(CFG.form); renderHeadings(CFG); admToast('✅ Formulario guardado'); autoPublish();
 }
 /* ── ADMIN FORM FIELDS ── */
 function fFieldHtml(f,i){
@@ -1532,7 +1588,10 @@ function saveCta(){
   CFG.cta.btn=document.getElementById('c-cta-btn').value;
   CFG.footer.tagline=document.getElementById('c-foot-tag').value;
   CFG.footer.copy=document.getElementById('c-foot-copy').value;
-  saveCfg(CFG); renderCta(CFG.cta); renderFooter(CFG.footer); admToast('✅ CTA & Footer guardados'); autoPublish();
+  CFG.seo=CFG.seo||{};
+  CFG.seo.title=document.getElementById('c-seo-title').value;
+  CFG.seo.desc=document.getElementById('c-seo-desc').value;
+  saveCfg(CFG); renderCta(CFG.cta); renderFooter(CFG.footer); renderHeadings(CFG); admToast('✅ CTA, Footer y SEO guardados'); autoPublish();
 }
 
 document.getElementById('adm-header-save').addEventListener('click',()=>{
