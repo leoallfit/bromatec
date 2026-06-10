@@ -845,8 +845,24 @@ const DEFAULT = {
 
 /* ══ LOAD / SAVE CONFIG ══ */
 function loadCfg(){ try{ return Object.assign({},DEFAULT,JSON.parse(localStorage.getItem('bromatec_cfg')||'{}')); }catch(e){ return DEFAULT; } }
+/* Quita imágenes pesadas (data: URLs) de una copia del config. Se usa como respaldo
+   cuando la config no entra en localStorage: las imágenes igual se publican a GitHub
+   y se reponen al recargar (el sitio lee config.json). */
+function stripHeavyImages(cfg){
+  return JSON.parse(JSON.stringify(cfg, (k,v)=> (typeof v==='string' && v.indexOf('data:')===0) ? '' : v));
+}
 function saveCfg(cfg){
-  localStorage.setItem('bromatec_cfg',JSON.stringify(cfg));
+  try{
+    localStorage.setItem('bromatec_cfg',JSON.stringify(cfg));
+  }catch(e){
+    // Cuota excedida (típicamente por muchas imágenes base64): guardamos versión liviana.
+    try{
+      localStorage.setItem('bromatec_cfg',JSON.stringify(stripHeavyImages(cfg)));
+      if(typeof admToast==='function') admToast('⚠️ Config muy pesada por imágenes: se guardó liviana acá. Publicá con el token para conservarlas en todos los dispositivos.','warn');
+    }catch(e2){
+      if(typeof admToast==='function') admToast('⚠️ No se pudo guardar local (imágenes muy pesadas). Igual podés publicar con el token.','warn');
+    }
+  }
 }
 let CFG = loadCfg();
 
@@ -1651,12 +1667,13 @@ function setupUploadListeners(){
       const imgEl=new Image(), reader=new FileReader();
       reader.onload=ev=>{
         imgEl.onload=()=>{
-          const MAX=800; let w=imgEl.width, h=imgEl.height;
+          const MAX=(ftype==='avatar')?160:560; const Q=(ftype==='avatar')?0.8:0.72;
+          let w=imgEl.width, h=imgEl.height;
           if(w>MAX||h>MAX){ if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;} }
           const canvas=document.createElement('canvas');
           canvas.width=w; canvas.height=h;
           canvas.getContext('2d').drawImage(imgEl,0,0,w,h);
-          const dataUrl=canvas.toDataURL('image/jpeg',0.82);
+          const dataUrl=canvas.toDataURL('image/jpeg',Q);
           if(!CFG.testimonials[i]) CFG.testimonials[i]={};
           if(ftype==='before') CFG.testimonials[i].beforeUrl=dataUrl;
           else if(ftype==='after') CFG.testimonials[i].afterUrl=dataUrl;
@@ -1703,12 +1720,12 @@ function setupUploadListeners(){
       const imgEl=new Image(), reader=new FileReader();
       reader.onload=ev=>{
         imgEl.onload=()=>{
-          const MAX=1200; let w=imgEl.width, h=imgEl.height;
+          const MAX=900; let w=imgEl.width, h=imgEl.height;
           if(w>MAX||h>MAX){ if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;} }
           const canvas=document.createElement('canvas');
           canvas.width=w; canvas.height=h;
           canvas.getContext('2d').drawImage(imgEl,0,0,w,h);
-          const dataUrl=canvas.toDataURL('image/jpeg',0.85);
+          const dataUrl=canvas.toDataURL('image/jpeg',0.78);
           if(!CFG.pillars.items[i]) CFG.pillars.items[i]={};
           CFG.pillars.items[i].imageUrl=dataUrl;
           const prev=document.getElementById(`prev-pil-${i}`);
