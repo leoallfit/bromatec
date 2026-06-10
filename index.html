@@ -1900,7 +1900,8 @@ document.getElementById('testi-items').addEventListener('click',e=>{
    Se guarda en localStorage('bromatec_gh_repo') con formato usuario/repo. */
 const GH_REPO_KEY='bromatec_gh_repo';
 const GH_FILE='config.json';
-function getGhRepo(){ return (localStorage.getItem(GH_REPO_KEY)||'TU-USUARIO/TU-REPO').trim(); }
+const GH_REPO_DEFAULT='leoallfit/bromatec';   // repo donde vive el sitio: todos los dispositivos leen su config.json
+function getGhRepo(){ return (localStorage.getItem(GH_REPO_KEY)||GH_REPO_DEFAULT).trim(); }
 function setGhRepo(repo){ localStorage.setItem(GH_REPO_KEY, repo.trim()); }
 function ghRepoOk(){ const r=getGhRepo(); return /^[^/\s]+\/[^/\s]+$/.test(r) && r!=='TU-USUARIO/TU-REPO'; }
 function GH_RAW(){ return `https://raw.githubusercontent.com/${getGhRepo()}/main/${GH_FILE}`; }
